@@ -40,13 +40,16 @@ The project contains a React frontend, a Spring Boot REST backend, and a MySQL d
 
 ## Prerequisites
 
-Install these tools before running the project:
+For Docker setup:
+
+- Docker Desktop
+
+For manual setup without Docker:
 
 - Java 17
 - Node.js 18 or later
 - npm
-- Docker Desktop
-- MySQL 8, only required for the manual local setup
+- MySQL 8
 
 ## Flow 1: Run With Docker Compose
 
