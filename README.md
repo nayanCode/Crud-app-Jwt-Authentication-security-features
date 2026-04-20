@@ -1,105 +1,256 @@
-# crud
+# CRUD Spring Boot React MySQL Docker
 
-CRUD Application using React and Spring Boot
+A full-stack CRUD application built with React, Spring Boot, Spring Security, JWT authentication, MySQL, and Docker.
 
-This project is a simple CRUD (Create, Read, Update, Delete) application built with React for the frontend and Spring Boot for the backend. It allows you to manage a collection of items.
+The project contains a React frontend, a Spring Boot REST backend, and a MySQL database. You can run it in two ways:
 
-=> Table of Contents
+- Using Docker Compose
+- Running the frontend and backend manually on your machine
 
-* Getting Started
-* Prerequisites
-* Installation
-* Running the Application
-* Usage
-* Project Structure
-* Technologies Used
-* Contributing
-* License
+## Tech Stack
 
-=>Getting Started
+- React 18
+- Redux Toolkit
+- Bootstrap
+- Spring Boot 3
+- Spring Security
+- JWT
+- Spring Data JPA
+- MySQL 8
+- Docker and Docker Compose
 
+## Project Structure
 
-* Node.js and npm installed.
-* Java and Maven for Spring Boot.
-* A compatible database (e.g., MySQL, PostgreSQL) with schema created.
-  
-=> Installation
- 
--> Clone the repository:
+```text
+.
+|-- backend/
+|   `-- crud-application/
+|       |-- src/
+|       |-- Dockerfile
+|       |-- docker-compose.yml
+|       `-- pom.xml
+`-- frontend/
+    `-- crudfront/
+        |-- src/
+        |-- public/
+        |-- Dockerfile
+        |-- nginx.conf
+        `-- package.json
+```
 
-git clone https://github.com/your-username/your-crud-app.git
+## Prerequisites
 
--> Install frontend dependencies:
+Install these tools before running the project:
 
-cd client
+- Java 17
+- Node.js 18 or later
+- npm
+- Docker Desktop
+- MySQL 8, only required for the manual local setup
+
+## Flow 1: Run With Docker Compose
+
+Use this flow if you want Docker to run the backend, frontend, and MySQL database together.
+
+### 1. Clone The Repository
+
+```bash
+git clone <your-repository-url>
+cd CRUD-Springboot-React-MySQL-Docker
+```
+
+### 2. Build The Backend JAR
+
+The backend Dockerfile copies the Spring Boot JAR from the `target` folder, so build it before starting Docker Compose.
+
+For Windows PowerShell:
+
+```powershell
+cd backend\crud-application
+.\mvnw.cmd clean package -DskipTests
+```
+
+For macOS/Linux/Git Bash:
+
+```bash
+cd backend/crud-application
+./mvnw clean package -DskipTests
+```
+
+### 3. Start All Containers
+
+Run this command from `backend/crud-application`:
+
+```bash
+docker compose up --build
+```
+
+Docker Compose starts:
+
+- MySQL on `localhost:3307`
+- Spring Boot backend on `http://localhost:8080`
+- React frontend on `http://localhost:3000`
+
+Docker database configuration:
+
+```text
+Database: crud_db
+Username: root
+Password: Rooter@2389
+JDBC URL inside Docker: jdbc:mysql://mysql-db:3306/crud_db
+JDBC URL from your machine: jdbc:mysql://localhost:3307/crud_db
+```
+
+### 4. Open The Application
+
+Visit:
+
+```text
+http://localhost:3000
+```
+
+### 5. Stop The Containers
+
+```bash
+docker compose down
+```
+
+To also remove the MySQL volume and delete stored database data:
+
+```bash
+docker compose down -v
+```
+
+## Flow 2: Run Manually Without Docker
+
+Use this flow if you want to run MySQL, Spring Boot, and React directly on your machine.
+
+### 1. Start MySQL
+
+Create a database named `crud_db`.
+
+```sql
+CREATE DATABASE crud_db;
+```
+
+### 2. Configure Backend Environment Variables
+
+The backend reads database settings from environment variables.
+
+For Windows PowerShell:
+
+```powershell
+$env:SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/crud_db"
+$env:SPRING_DATASOURCE_USERNAME="root"
+$env:SPRING_DATASOURCE_PASSWORD="your_mysql_password"
+```
+
+For macOS/Linux/Git Bash:
+
+```bash
+export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/crud_db"
+export SPRING_DATASOURCE_USERNAME="root"
+export SPRING_DATASOURCE_PASSWORD="your_mysql_password"
+```
+
+### 3. Start The Backend
+
+From the project root:
+
+```bash
+cd backend/crud-application
+./mvnw spring-boot:run
+```
+
+For Windows PowerShell, use:
+
+```powershell
+cd backend\crud-application
+.\mvnw.cmd spring-boot:run
+```
+
+The backend runs at:
+
+```text
+http://localhost:8080
+```
+
+### 4. Start The Frontend
+
+Open a new terminal from the project root:
+
+```bash
+cd frontend/crudfront
 npm install
-
--> Configure the backend:
-
-* Create a application.properties file in the src/main/resources directory of the Spring Boot project.
-* Configure your database connection in application.properties. For example:
-
--> properties
-
-spring.datasource.url=jdbc:mysql://localhost:3306/your_database
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-
-Specify other configurations like server port and logging as needed.
-
--> Build the Spring Boot project:
-
-cd server
-mvn clean install
-Running the Application
-
--> Start the Spring Boot server:
-
-cd server
-mvn spring-boot:run
-
-The backend server should now be running on http://localhost:8080.
-
--> Start the React frontend:
-
-cd client
 npm start
+```
 
-The React development server should start and open the application in your default web browser at http://localhost:3000.
+The frontend runs at:
 
-=> Usage
+```text
+http://localhost:3000
+```
 
-Access the CRUD application through the web browser.
-Perform CRUD operations on the items.
-Create, read, update, and delete items in the database.
+## Useful URLs
 
-=> Project Structure
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8080`
+- Docker MySQL: `localhost:3307`
+- Local MySQL: `localhost:3306`
 
--> The project is structured as follows:
+## Backend Database Properties
 
-client/: Contains the React frontend code.
-server/: Contains the Spring Boot backend code.
-database/: Contains database schema and migration scripts.
+The backend uses these properties from `application.properties`:
 
-=> Technologies Used
+```properties
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+```
 
-* React
-* Spring Boot
-* Java
-* MySQL (or your preferred database)
-* npm
-* Maven
-  
-=> Contributing
+For Docker, these values are provided by `docker-compose.yml`.
 
-Feel free to contribute to this project by opening issues or pull requests. Your contributions are welcome!
+For manual setup, you must provide them yourself as environment variables before starting the backend:
 
-=> License
+```text
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/crud_db
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=your_mysql_password
+```
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## Notes
 
-Feel free to customize this README file to include specific details about your CRUD application, such as project features, API documentation, or any other relevant information. It's essential to provide clear and concise instructions to help users understand and use your application effectively.
+- The backend uses `spring.jpa.hibernate.ddl-auto=update`, so tables are created or updated automatically when the backend starts.
+- In the Docker flow, MySQL credentials are already configured in `docker-compose.yml`.
+- In the manual flow, update the environment variables with your local MySQL username and password.
+- The frontend API client currently points to `http://localhost:8080`.
 
+## Common Commands
 
+Build backend:
 
+```bash
+cd backend/crud-application
+./mvnw clean package
+```
 
+Run backend tests:
+
+```bash
+cd backend/crud-application
+./mvnw test
+```
+
+Build frontend:
+
+```bash
+cd frontend/crudfront
+npm run build
+```
+
+Run frontend tests:
+
+```bash
+cd frontend/crudfront
+npm test
+```
